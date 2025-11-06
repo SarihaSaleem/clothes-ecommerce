@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="100%" height="100%" fill="#eef2ff" />
+  <g transform="translate(200,80)">
+    <rect x="0" y="0" width="120" height="200" rx="12" fill="#1e3a8a" />
+    <path d="M10 20 L50 40 L90 20" stroke="#93c5fd" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <rect x="18" y="140" width="24" height="48" fill="#1e3a8a" opacity="0.9"/>
+    <rect x="78" y="140" width="24" height="48" fill="#1e3a8a" opacity="0.9"/>
+  </g>
+  <text x="400" y="520" font-family="Arial, Helvetica, sans-serif" font-size="36" text-anchor="middle" fill="#1e3a8a">Jeans</text>
+</svg>

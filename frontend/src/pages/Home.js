@@ -2,6 +2,33 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api';
 
+const FALLBACK_PRODUCTS = [
+  {
+    _id: 'f1',
+    name: 'T-Shirt',
+    category: 'Men',
+    price: 15,
+    stock: 0,
+    image: '/images/tshirt.svg'
+  },
+  {
+    _id: 'f2',
+    name: 'Dress',
+    category: 'Women',
+    price: 25,
+    stock: 0,
+    image: '/images/dress.svg'
+  },
+  {
+    _id: 'f3',
+    name: 'Jeans',
+    category: 'Men',
+    price: 30,
+    stock: 0,
+    image: '/images/jeans.svg'
+  }
+];
+
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,12 +45,24 @@ const Home = () => {
       
       const response = await api.get('/products');
       console.log('Products fetched successfully:', response.data);
-      
-      setProducts(response.data);
+
+      // normalize field names if backend returns `id` instead of `_id`
+      const normalized = response.data.map(p => ({
+        _id: p._id || p.id || String(p.id || Math.random()),
+        name: p.name,
+        category: p.category,
+        price: p.price,
+        stock: p.stock ?? p.quantity ?? 0,
+        image: p.image || (p.images && p.images[0]) || null
+      }));
+
+      setProducts(normalized);
       setRetryCount(0); // Reset retry count on success
     } catch (err) {
       console.error('Error fetching products:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch products');
+      // If the API fails, fall back to built-in sample products so the UI remains usable
+      setProducts(FALLBACK_PRODUCTS);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch products — showing sample data');
     } finally {
       setLoading(false);
     }

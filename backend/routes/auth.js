@@ -4,7 +4,8 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 require('dotenv').config();
 
-const JWT_SECRET = process.env.JWT_SECRET;
+// Provide a safe default for development so missing .env doesn't crash the server
+const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_change_me';
 
 // Simple in-memory users (for beginners)
 const users = []; // start empty, will store {id, username, email, passwordHash}
@@ -35,7 +36,14 @@ router.post('/login', async (req, res) => {
   const isValid = await bcrypt.compare(password, user.passwordHash);
   if (!isValid) return res.status(400).send('Incorrect password');
 
-  const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
+  let token;
+  try {
+    token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
+  } catch (e) {
+    console.error('JWT sign error:', e);
+    return res.status(500).send('Authentication error');
+  }
+
   res.cookie('token', token, { httpOnly: true, sameSite: 'Strict' });
   res.send('Login successful');
 });

@@ -3,7 +3,8 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-const JWT_SECRET = process.env.JWT_SECRET;
+// Default secret for development to avoid runtime crashes when .env is missing
+const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_change_me';
 
 // In-memory orders (beginner-friendly)
 const orders = []; // stores {id, userId, items: [{productId, quantity, size, color}], total}
